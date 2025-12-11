@@ -1,6 +1,7 @@
 import os
 from flask import Flask, redirect, request
 import requests
+from mangum import Mangum  
 
 app = Flask(__name__)
 
@@ -10,12 +11,7 @@ REDIRECT_URI = os.getenv("REDIRECT_URI")
 GUILD_ID = os.getenv("GUILD_ID")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
-
-@app.route("/")
-def home():
-    return '<a href="/verify">Verify</a>'
-
-@app.route("/verify")
+@app.route("/api/verify")
 def verify():
     url = (
         "https://discord.com/api/oauth2/authorize"
@@ -26,7 +22,7 @@ def verify():
     )
     return redirect(url)
 
-@app.route("/callback")
+@app.route("/api/callback")
 def callback():
     code = request.args.get("code")
     data = {
@@ -58,5 +54,5 @@ def callback():
 
     return "Verification Successful"
 
-port = int(os.environ.get("PORT", 3000))
-app.run(host="0.0.0.0", port=port)
+handler = Mangum(app)
+
