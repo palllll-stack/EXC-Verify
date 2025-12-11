@@ -4,11 +4,12 @@ import requests
 
 app = Flask(__name__)
 
-CLIENT_ID = os.getenv("1447157933216370779")
-CLIENT_SECRET = os.getenv("y85H1tefCiKTg5Q64auAsqmFesRObuOd")
-REDIRECT_URI = os.getenv("https://exc-verify.onrender.com/callback")
-GUILD_ID = os.getenv("1244247110602195007")
+CLIENT_ID = os.getenv("CLIENT_ID")
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+REDIRECT_URI = os.getenv("REDIRECT_URI")
+GUILD_ID = os.getenv("GUILD_ID")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
+
 
 @app.route("/")
 def home():
