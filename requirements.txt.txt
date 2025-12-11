@@ -1,4 +1,0 @@
-flask
-requests
-mangum
-python-dotenv
