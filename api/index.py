@@ -1,7 +1,6 @@
 from flask import Flask, redirect, request
 from mangum import Mangum
-import os
-import requests
+import os, requests
 
 app = Flask(__name__)
 
@@ -25,8 +24,6 @@ def verify():
 @app.route("/api/callback")
 def callback():
     code = request.args.get("code")
-    # OAuth Token holen & User auf Server einladen
-    # (wie in deinem vorherigen Flask-Code)
     return "Verification successful"
 
 handler = Mangum(app)
