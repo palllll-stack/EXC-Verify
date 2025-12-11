@@ -1,0 +1,61 @@
+import os
+from flask import Flask, redirect, request
+import requests
+
+app = Flask(__name__)
+
+CLIENT_ID = os.getenv("1447157933216370779")
+CLIENT_SECRET = os.getenv("y85H1tefCiKTg5Q64auAsqmFesRObuOd")
+REDIRECT_URI = os.getenv("https://exc-verify.onrender.com/callback")
+GUILD_ID = os.getenv("1244247110602195007")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+
+@app.route("/")
+def home():
+    return '<a href="/verify">Verify</a>'
+
+@app.route("/verify")
+def verify():
+    url = (
+        "https://discord.com/api/oauth2/authorize"
+        f"?client_id={CLIENT_ID}"
+        f"&redirect_uri={REDIRECT_URI}"
+        "&response_type=code"
+        "&scope=identify%20guilds.join"
+    )
+    return redirect(url)
+
+@app.route("/callback")
+def callback():
+    code = request.args.get("code")
+    data = {
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET,
+        "grant_type": "authorization_code",
+        "code": code,
+        "redirect_uri": REDIRECT_URI,
+    }
+
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    token = requests.post(
+        "https://discord.com/api/oauth2/token",
+        data=data,
+        headers=headers
+    ).json()
+
+    access_token = token.get("access_token")
+
+    headers = {
+        "Authorization": f"Bot {BOT_TOKEN}",
+        "Content-Type": "application/json"
+    }
+    requests.put(
+        f"https://discord.com/api/v10/guilds/{GUILD_ID}/members/@me",
+        json={"access_token": access_token},
+        headers=headers
+    )
+
+    return "Verification Successful"
+
+port = int(os.environ.get("PORT", 3000))
+app.run(host="0.0.0.0", port=port)
